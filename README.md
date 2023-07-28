@@ -14,17 +14,19 @@
   <p>To access an resource you need to have authorization <b>ACL</b> so system will check if you've right for that resource</p>
 </div>
 <h3>Important app ressource</h3>
+<p>
 <ul>
-  <li > <a href="localhost:8081/api/v1/auth/register">localhost:8081/api/v1/auth/register</a></li>
+  <li> <a href="localhost:8081/api/v1/auth/register">localhost:8081/api/v1/auth/register</a></li>
   <li > <a href="localhost:8081/api/v1/auth/authenticate">localhost:8081/api/v1/auth/authenticate</a></li>
   <li > <a href="localhost:8081/api/v1/app/addRole">localhost:8081/api/v1/app/addRole</a></li>
   <li > <a href="localhost:8081/api/v1/app/addRoleToUser">localhost:8081/api/v1/app/addRoleToUser</a></li>
   <li > <a href="localhost:8081/api/v1/demo">localhost:8081/api/v1/demo</a></li>
 </ul>
+</p>
 <b>Important to nkow to forget to provide access token at header befaore access a resource</b>
 <b>Use <a href="https://www.postman.com/">Postman</a> or any client you to test it</b>
 <div>
-  <h3>Basic comd to run docke-compose</h3>
+  <h3>Basic cmd to run docke-compose</h3>
   <b>Make sure you have <a href="https://docs.docker.com/">docker</a> and <a href="https://www.postgresql.org/">PostgreSQL</a> instal
   <ol>
     <li>$ docker compose up -d</li>
