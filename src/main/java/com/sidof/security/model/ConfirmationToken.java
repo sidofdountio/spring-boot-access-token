@@ -17,21 +17,10 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
  * @Version v1.0
  * @YouTube @sidof8065
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
-@Builder
+@Data @AllArgsConstructor @NoArgsConstructor @Entity @Builder
 public class ConfirmationToken {
-    @SequenceGenerator(
-            name = "sequence_confirmation_token",
-            sequenceName = "sequence_confirmation_token",
-            allocationSize = 1
-    )
-    @GeneratedValue(
-            generator = "sequence_confirmation_token",
-            strategy = SEQUENCE
-    )
+    @SequenceGenerator(name = "sequence_confirmation_token", sequenceName = "sequence_confirmation_token", allocationSize = 1)
+    @GeneratedValue(generator = "sequence_confirmation_token", strategy = SEQUENCE)
     @Id
     private Long id;
     @Column(nullable = false)

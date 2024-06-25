@@ -9,6 +9,7 @@ import com.sidof.security.request.AuthenticationRequest;
 import com.sidof.security.request.AuthenticationResponse;
 import com.sidof.security.request.RegisterRequester;
 import com.sidof.security.model.AppUser;
+import org.apache.coyote.BadRequestException;
 
 import java.util.List;
 
@@ -19,13 +20,13 @@ import java.util.List;
  * @YouTube @sidof8065
  */
 public interface AppUserServiceImplement {
-    AuthenticationResponse register (RegisterRequester registerRequester);
+    AuthenticationResponse register (RegisterRequester registerRequester) throws BadRequestException;
     AuthenticationResponse authentication (AuthenticationRequest requester) throws Exception;
     AppUser updateAppUser(AppUser appUser);
     AppUser getAppUserById(Long id);
     List<AppUser>APP_USER_LIST();
     Role saveRole(Role role);
     AddRoleToUserRequest addRoleToUser(AddRoleToUserRequest request);
-    ConfirmationToken confirmToken(String token);
+    ConfirmationToken confirmToken(String token) throws BadRequestException;
 
 }

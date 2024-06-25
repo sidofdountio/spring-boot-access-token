@@ -1,6 +1,7 @@
 package com.sidof.security.mail;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -13,5 +14,5 @@ import org.springframework.stereotype.Service;
 
 public interface EmailService {
 
-    void sendSimpleEmailMessage(String to,String name);
+    void sendSimpleEmailMessage(String to,String name,String link) throws BadRequestException;
 }

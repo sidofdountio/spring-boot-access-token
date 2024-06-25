@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
+import org.apache.coyote.BadRequestException;
 
 /**
  * @Author sidof
@@ -53,15 +54,15 @@ public class AppUserService implements AppUserServiceImplement {
     }
 
     @Override
-    public AuthenticationResponse register(RegisterRequester request) {
+    public AuthenticationResponse register(RegisterRequester request) throws BadRequestException {
         boolean isValidEmail = emailValidator.test(request.getEmail());
         if (!isValidEmail) {
-            throw new IllegalStateException(String.format("Email %s not in rigth format", request.getEmail()));
+            throw new IllegalStateException(String.format("Email %s not in right format", request.getEmail()));
         }
         Optional<AppUser> existAppUser = appUserRepository.findByEmail(request.getEmail());
         if (existAppUser.isPresent()) {
-            log.error(String.format("Email %s already taken", request.getEmail()));
-            throw new IllegalStateException(String.format("Email %s already taken", request.getEmail()));
+            log.error("Email {} already taken", request.getEmail());
+            throw new  BadRequestException(String.format("Email %s already taken", request.getEmail()));
         }
         var user = AppUser.builder()
                 .firstName(request.getFirstName())
@@ -70,7 +71,7 @@ public class AppUserService implements AppUserServiceImplement {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
         appUserRepository.save(user);
-        log.info("New user {} registed", request);
+        log.info("New user {} register", request);
 
         var token = JwtService.generateAccessToken(user);
         ConfirmationToken.builder()
@@ -79,8 +80,7 @@ public class AppUserService implements AppUserServiceImplement {
                 .expiresAt(now().plusDays(1))
                 .build();
         String link = "http://localhost:8081/api/v1/auth/confirm?token=" + token;
-        //emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
-        emailService.sendSimpleEmailMessage(request.getEmail(), request.getFirstName());
+        emailService.sendSimpleEmailMessage(request.getEmail(), request.getFirstName(),link);
         return AuthenticationResponse
                 .builder()
                 .token(token)
@@ -119,26 +119,23 @@ public class AppUserService implements AppUserServiceImplement {
     }
 
     @Override
-    public ConfirmationToken confirmToken(String token) {
+    public ConfirmationToken confirmToken(String token) throws BadRequestException {
 
         ConfirmationToken tokenToConfirm = confirmationTokenRepository.findByToken(token);
         if (tokenToConfirm != null) {
-            throw new IllegalStateException(String.format("Token %s not found", token));
+            throw new BadRequestException(String.format("Token %s not found", token));
         }
         if (tokenToConfirm.getConfirmedAt() != null) {
             log.error("Token already confirmed");
-            throw new IllegalStateException("Token already confirmed");
+            throw new BadRequestException("Token already confirmed");
         }
         if (jwtService.isTokenExpired(token)) {
             throw new IllegalStateException("Token expired");
         }
-
         tokenToConfirm.setConfirmedAt(now());
-
         final String username = jwtService.extractUsername(token);
         AppUser appUserPresent = appUserRepository.findByEmail(username)
                 .orElseThrow(() -> new NullPointerException(String.format("Invalid  token %s", token)));
-
         appUserPresent.setEnable(true);
         appUserPresent.setLocked(true);
         return confirmationTokenRepository.save(tokenToConfirm);

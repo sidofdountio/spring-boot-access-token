@@ -9,6 +9,7 @@ import com.sidof.security.request.AuthenticationResponse;
 import com.sidof.security.request.RegisterRequester;
 import com.sidof.security.service.AppUserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class AuthenticationController {
     private final AppUserService appUserService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequester request) {
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequester request) throws BadRequestException {
         AuthenticationResponse token = appUserService.register(request);
         return new ResponseEntity<>(token,CREATED);
     }
@@ -41,7 +42,7 @@ public class AuthenticationController {
     }
 
     @GetMapping(path = "/confirm")
-    public ResponseEntity<ConfirmationToken> confirm(@RequestParam("token") String token) {
+    public ResponseEntity<ConfirmationToken> confirm(@RequestParam("token") String token) throws BadRequestException {
         return new ResponseEntity<>(appUserService.confirmToken(token),OK);
     }
 
